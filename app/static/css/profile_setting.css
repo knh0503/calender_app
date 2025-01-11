@@ -1,0 +1,52 @@
+@import url('style_v2.css');
+
+.profile_setting {
+    width: 100%;
+}
+.user-profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #edf6ff;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 0 15px;
+    cursor: pointer;
+}
+#user-image {
+    justify-content: center;
+    margin-bottom: 20px;
+    background: none;
+    cursor: auto;
+}
+.profile-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    cursor: pointer;
+}
+.user-profile p {
+    font-size: 0.9em;
+}
+.user-profile input {
+    border: none;
+    background: none;
+    text-align: right;
+    font-weight: bold;
+}
+.submit-div {
+    margin: 20px 10px;
+}
+.submit-div button {
+    border: none;
+    padding: 7px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+#submit-button {
+    background-color: rgb(12, 95, 16);
+    color: white;
+}
+#cancel-button {
+    background-color: #eae8e5;
+}

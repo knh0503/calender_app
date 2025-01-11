@@ -1,1 +1,1 @@
-from app.models.calender import User, Event
+from app.models.model import User, Event

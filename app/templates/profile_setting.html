@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calendar</title>
+    <link rel="stylesheet" href="/static/css/profile_setting.css">
+    <script src="/static/js/profile_setting.js" defer></script>
+</head>
+<body>
+    <nav class="nav-top">
+        <div class="nav-item">
+            <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/logo_v2.png') }}" class="logo-picture"></a>
+        </div>
+        <div class="nav-item">
+            <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/comment-dots.png') }}" class="nav-picture" id="comment-button"></a>
+            <div class="dropdown">
+                <img src="{{ url_for('static', filename='images/settings.png') }}" class="nav-picture" id="setting-button">
+                <div class="dropdown-content" id="settingsMenu">
+                    <a href="{{ url_for('main.profile_setting') }}">Profile</a>
+                    <a href="{{ url_for('main.home') }}">Account</a>
+                    <a href="{{ url_for('main.home') }}">Notifications</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="profile_setting" class="profile_setting">
+        <div id="user-image" class="user-profile">
+            <img src="{{ url_for('static', filename='images/woman.png') }}" class="profile-image" id="profile-image">
+        </div>
+        <input type="file" id="image-input" style="display: none;" accept="image/*">
+
+        <div id="user-name" class="user-profile">
+            <p>Name</p>
+            <input type="text" id="name-input" class="text-input" placeholder="Enter your name">
+        </div>
+
+        <div id="user-description" class="user-profile">
+            <p>Description</p>
+            <input type="text" id="description-input" class="text-input" placeholder="Enter your description">
+        </div>
+
+        <div id="user-interests" class="user-profile">
+            <p>Interests</p>
+            <input type="text" id="interests-input" class="text-input" placeholder="Enter your interests">
+        </div>
+
+        <div id="user-company" class="user-profile">
+            <p>Company</p>
+            <input type="text" id="company-input" class="text-input" placeholder="Enter your company">
+        </div>
+
+        <div id="user-location" class="user-profile">
+            <p>Location</p>
+            <input type="text" id="location-input" class="text-input" placeholder="Enter your location">
+        </div>
+
+        <div id="user-website" class="user-profile">
+            <p>Website</p>
+            <input type="text" id="website-input" class="text-input" placeholder="Enter your website">
+        </div>
+
+        <div id="submit-div" class="submit-div">
+            <button id="submit-button">Submit</button>
+            <button id="cancel-button">Cancel</button>
+        </div>
+    </div>
+
+    <nav class="nav-bottom">
+        <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/calendar.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/diary-bookmarks.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/add.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/list.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/bell.png') }}" class="nav-picture"></a>
+    </nav>
+</body>
+</html>

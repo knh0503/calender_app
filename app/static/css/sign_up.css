@@ -1,0 +1,197 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.form-container {
+    width: 70%;
+}
+
+/* 상단 네비게이션 바 */
+.navigation-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 50px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    background-color: white;
+}
+.nav-item.left {
+    position: absolute;
+    left: 10px;
+    flex: 1;
+}
+.nav-picture {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+.nav-item.center {
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+/* Step Indicator */
+.step-indicator-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+.step-indicator {
+    width: 30px;
+    height: 30px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 1.2em;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #edf6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.step-indicator.active {
+    background-color: rgb(41, 69, 69);
+    color: #edf6ff;
+}
+.line {
+    height: 2px;
+    width: 50px;
+    background-color: #edf6ff;
+}
+
+/* 입력 폼 */
+.step {
+    display: none;
+    height: 550px;
+    position: relative;
+}
+.step.active {
+    display: block;
+}
+.form-group {
+    margin: 20px 0;
+    border-radius: 10px;
+}
+label {
+    display: block;
+    padding-left: 5px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.form-group input {
+    width: 100%;
+    height: 50px;
+    padding-left: 5px;
+    box-sizing: border-box;
+    background-color: #edf6ff;
+    border-radius: 10px;
+    border: none;
+}
+.form-group input:focus {
+    outline: none;
+    border: none;
+}
+.email-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.email-form button {
+    min-width: 90px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #285581;
+    border-radius: 10px;
+    border: none;
+    color: #edf6ff;
+    font-weight: bold;
+    cursor: pointer;
+}
+.form-group p {
+    margin: 5px;
+    font-size: 12px;
+}
+.user-birth {
+    position: relative;
+}
+.user-birth::-webkit-inner-spin-button,
+.user-birth::-webkit-calendar-picker-indicator {
+    position: absolute;
+    left: 80px;
+    cursor: pointer;
+}
+.image-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: none;
+}
+#profile-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 50%;
+}
+.button-div {
+    width: 100%;
+    position:absolute;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.button-div button {
+    width: 120px;
+    height: 50px;
+    cursor: pointer;
+    border-radius: 20px;
+    border: none;
+    font-weight: bold;
+}
+.step-button {
+    background-color: #bfe1f7;
+    color: black;
+}
+.submit-button {
+    background-color: #285581;
+    color: white;
+}
+
+/* 회원가입 완료 메세지 */
+.welcome-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.logo-picture {
+    width: 300px;
+}
+.welcome-message p {
+    font-weight: bold;
+}
+#goto-login {
+    width: 200px;
+    margin: 10px;
+    padding: 15px;
+    text-align: center;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #edf6ff;
+    border: none;
+}
