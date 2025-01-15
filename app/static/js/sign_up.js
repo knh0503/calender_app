@@ -66,7 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
             pwdResult.textContent = '';
         }
         else if (userPwd.value === userRepwd.value) {
-            pwdResult.textContent = '';
+            pwdResult.textContent = "비밀번호가 일치합니다.";
+            pwdResult.style.color = "green";
         }
         else {
             pwdResult.textContent = "비밀번호가 일치하지 않습니다.";
@@ -95,13 +96,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         }
         else {
-            phoneResult.textContent = '';
+            phoneResult.textContent = '사용 가능한 휴대폰 번호입니다.';
+            phoneResult.style.color = "green";
         }
     }
 
     phone.addEventListener('input', checkPhoneValidate);
 })
 
+// check all required inputs
 function validateAndShowstep(step) {
     const inputs = document.querySelectorAll('#step1 input[required]');
     let allFilled = true;
@@ -159,5 +162,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //go to login page
 document.getElementById('goto-login').addEventListener('click', function() {
-    window.location.href = '/';
+    window.location.href = '/sign_in';
 });

@@ -1,27 +1,10 @@
-/* 상단 네비게이션 바 */
-.navigation-bar {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 50px;
-    padding: 0 10px;
-    box-sizing: border-box;
-    background-color: white;
+@import url('sign_up.css');
+.button-div {
+    position:static;
+    margin-top: 50px;
 }
-.nav-item.left {
-    position: absolute;
-    left: 10px;
-    flex: 1;
-}
-.nav-picture {
-    width: 15px;
-    height: 15px;
-    cursor: pointer;
-}
-.nav-item.center {
-    text-align: center;
-    font-size: 1.1em;
-    font-weight: bold;
+.button-div button {
+    width: 100px;
+    background-color: #285581;
+    color: white;
 }

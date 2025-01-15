@@ -8,16 +8,16 @@
 <body>
     <nav class="nav-top">
         <div class="nav-item">
-            <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/logo_v2.png') }}" class="logo-picture"></a>
+            <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/logo_v2.png') }}" class="logo-picture"></a>
         </div>
         <div class="nav-item">
-            <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/comment-dots.png') }}" class="nav-picture" id="comment-button"></a>
+            <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/comment-dots.png') }}" class="nav-picture" id="comment-button"></a>
             <div class="dropdown">
                 <img src="{{ url_for('static', filename='images/settings.png') }}" class="nav-picture" id="setting-button">
                 <div class="dropdown-content" id="settingsMenu">
-                    <a href="{{ url_for('main.profile_setting') }}">Profile</a>
-                    <a href="{{ url_for('main.home') }}">Account</a>
-                    <a href="{{ url_for('main.home') }}">Notifications</a>
+                    <a href="{{ url_for('views.profile_setting') }}">Profile</a>
+                    <a href="{{ url_for('views.home') }}">Account</a>
+                    <a href="{{ url_for('views.home') }}">Notifications</a>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
 
         <div id="user-name" class="user-profile">
             <p>Name</p>
-            <input type="text" id="name-input" class="text-input" placeholder="Enter your name">
+            <p>{{ user.username }}</p>
         </div>
 
         <div id="user-description" class="user-profile">
@@ -66,11 +66,11 @@
     </div>
 
     <nav class="nav-bottom">
-        <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/calendar.png') }}" class="nav-picture"></a>
-        <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/diary-bookmarks.png') }}" class="nav-picture"></a>
-        <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/add.png') }}" class="nav-picture"></a>
-        <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/list.png') }}" class="nav-picture"></a>
-        <a href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='images/bell.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/calendar.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/diary-bookmarks.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/add.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/list.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/bell.png') }}" class="nav-picture"></a>
     </nav>
 </body>
 </html>
