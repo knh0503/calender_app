@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
 from app.models.model import User
 from app import db
-from flask_login import login_user, login_manager
+from flask_login import login_user, login_required, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
@@ -96,3 +96,43 @@ def login():
                 'message' : '이메일을 다시 확인해주세요.',
             })
     return render_template('sign_in.html')
+
+@api.route('/update_profile', methods=['POST','GET'])
+@login_required
+def update_profile():
+    user = current_user
+
+    if request.method == 'POST':
+        user_name = request.form['user-name']
+        user_description = request.form['user-description']
+        user_birth = request.form['user-birth']
+        if (user_birth == ''):
+            user_birth = None
+        user_interests = request.form['user-interests']
+        user_work = request.form['user-work']
+        user_location = request.form['user-location']
+        user_website = request.form['user-website']
+        user_image = request.files['user-image']
+        # 프로필 사진이 변경될 때만 db에 수정된 경로 저장
+        if user_image.filename != '':
+            file_name = secure_filename(user_image.filename)
+            file_path = os.path.join('app/static/images/profile', file_name)
+            user_image.save(file_path)
+            # db에 저장할 경로는 static 이후부터
+            db_file_path = f'images/profile/{file_name}'
+            user.image_path = db_file_path
+
+        user.username = user_name
+        user.description = user_description
+        user.birth = user_birth
+        user.interest = user_interests
+        user.work = user_work
+        user.location = user_location
+        user.website = user_website
+        
+        db.session.commit()
+
+        return jsonify ({
+            'message': '프로필이 업데이트되었습니다.',
+        })
+    return render_template('proflie_setting.html')

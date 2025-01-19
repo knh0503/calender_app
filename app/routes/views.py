@@ -1,9 +1,16 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect
 from flask_login import login_required, current_user
 
 views = Blueprint('views', __name__)
 
 @views.route('/')
+def root():
+    if current_user.is_authenticated:
+        return redirect('/main')
+    else:
+        redirect('/welcome')
+
+@views.route('/welcome')
 def welcome():
     return render_template('welcome.html')
 

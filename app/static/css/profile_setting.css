@@ -1,9 +1,43 @@
-@import url('style_v2.css');
-
-.profile_setting {
+/* 상단 네비게이션 바 */
+.navigation-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    height: 50px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    background-color: white;
+    cursor: default;
+}
+.nav-item.left {
+    position: absolute;
+    left: 10px;
+    flex: 1;
+}
+.nav-picture {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+.nav-item.center {
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+/* 프로필 수정 폼 */
+.profile-setting-form {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
 }
 .user-profile {
+    width: 90%;
+    height: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -11,43 +45,49 @@
     border-radius: 10px;
     margin: 10px;
     padding: 0 15px;
-    cursor: pointer;
-}
-#user-image {
-    justify-content: center;
-    margin-bottom: 20px;
-    background: none;
-    cursor: auto;
 }
 .profile-image {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
     cursor: pointer;
+    border-radius: 100%;
+    margin: 30px 0;
 }
 .user-profile p {
     font-size: 0.9em;
+    cursor: default;
 }
 .user-profile input {
+    width: 80%;
     height: 100%;
     border: none;
     background: none;
     text-align: right;
     font-weight: bold;
 }
-.submit-div {
-    margin: 20px 10px;
-}
-.submit-div button {
+.user-profile input:focus {
+    outline: none;
     border: none;
-    padding: 7px 15px;
-    border-radius: 10px;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.button-div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.button-div button {
+    width: 120px;
+    height: 50px;
     cursor: pointer;
-}
-#submit-button {
-    background-color: rgb(12, 95, 16);
+    background-color: #285581;
     color: white;
-}
-#cancel-button {
-    background-color: #eae8e5;
+    border-radius: 30px;
+    border: none;
+    font-weight: bold;
+    margin-top: 30px;
 }

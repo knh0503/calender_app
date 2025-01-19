@@ -4,73 +4,65 @@
     <title>Calendar</title>
     <link rel="stylesheet" href="/static/css/profile_setting.css">
     <script src="/static/js/profile_setting.js" defer></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
 <body>
-    <nav class="nav-top">
-        <div class="nav-item">
-            <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/logo_v2.png') }}" class="logo-picture"></a>
+    <nav class="navigation-bar">
+        <div class="nav-item left">
+            <img src="{{ url_for('static', filename='images/left-arrow.png') }}" class="nav-picture" onclick="history.back();">
         </div>
-        <div class="nav-item">
-            <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/comment-dots.png') }}" class="nav-picture" id="comment-button"></a>
-            <div class="dropdown">
-                <img src="{{ url_for('static', filename='images/settings.png') }}" class="nav-picture" id="setting-button">
-                <div class="dropdown-content" id="settingsMenu">
-                    <a href="{{ url_for('views.profile_setting') }}">Profile</a>
-                    <a href="{{ url_for('views.home') }}">Account</a>
-                    <a href="{{ url_for('views.home') }}">Notifications</a>
-                </div>
-            </div>
+        <div class="nav-item center">
+            프로필 수정
         </div>
     </nav>
 
-    <div id="profile_setting" class="profile_setting">
-        <div id="user-image" class="user-profile">
-            <img src="{{ url_for('static', filename='images/woman.png') }}" class="profile-image" id="profile-image">
+    <form id="profile-setting-form" class="profile-setting-form">
+        <div id="user-profile">
+            <img src="{{ url_for('static', filename='images/profile/basic_profile.jpg' if user.image_path == ''
+            else user.image_path) }}" id="profile-image" class="profile-image">
+            <input type="file" name="user-image" id="image-input" style="display: none;" accept="image/*">
         </div>
-        <input type="file" id="image-input" style="display: none;" accept="image/*">
 
-        <div id="user-name" class="user-profile">
+        <div class="user-profile">
             <p>Name</p>
-            <p>{{ user.username }}</p>
+            <input type="text" name="user-name" class="text-input" value="{{user.username}}">
         </div>
 
-        <div id="user-description" class="user-profile">
+        <div class="user-profile">
             <p>Description</p>
-            <input type="text" id="description-input" class="text-input" placeholder="Enter your description">
+            <input type="text" name="user-description" class="text-input" value="{{user.description}}">
         </div>
 
-        <div id="user-interests" class="user-profile">
+        <div class="user-profile">
+            <p>Birthday</p>
+            <input type="date" max="9999-12-31" name="user-birth" class="text-input" value="{{ 'YYYY-MM-DD' if user.birth == None else user.birth }}">
+        </div>
+
+        <div class="user-profile">
             <p>Interests</p>
-            <input type="text" id="interests-input" class="text-input" placeholder="Enter your interests">
+            <input type="text" name="user-interests" class="text-input" value="{{user.interest}}">
         </div>
 
-        <div id="user-company" class="user-profile">
-            <p>Company</p>
-            <input type="text" id="company-input" class="text-input" placeholder="Enter your company">
+        <div class="user-profile">
+            <p>Work</p>
+            <input type="text" name="user-work" class="text-input" value="{{user.work}}">
         </div>
 
-        <div id="user-location" class="user-profile">
+        <div class="user-profile">
             <p>Location</p>
-            <input type="text" id="location-input" class="text-input" placeholder="Enter your location">
+            <input type="text" name="user-location" class="text-input" value="{{user.location}}">
         </div>
 
-        <div id="user-website" class="user-profile">
+        <div class="user-profile">
             <p>Website</p>
-            <input type="text" id="website-input" class="text-input" placeholder="Enter your website">
+            <input type="text" name="user-website" class="text-input" value="{{user.website}}">
         </div>
 
-        <div id="submit-div" class="submit-div">
-            <button id="submit-button">Submit</button>
-            <button id="cancel-button">Cancel</button>
+        <div class="button-div">
+            <button type="submit">Submit</button>
         </div>
     </div>
-
-    <nav class="nav-bottom">
-        <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/calendar.png') }}" class="nav-picture"></a>
-        <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/diary-bookmarks.png') }}" class="nav-picture"></a>
-        <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/add.png') }}" class="nav-picture"></a>
-        <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/list.png') }}" class="nav-picture"></a>
-        <a href="{{ url_for('views.home') }}"><img src="{{ url_for('static', filename='images/bell.png') }}" class="nav-picture"></a>
-    </nav>
 </body>
 </html>

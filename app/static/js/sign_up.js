@@ -1,8 +1,3 @@
-// back to previous page
-function back() {
-    history.back();
-}
-
 // move to other step
 let currentStep = 1;
 
