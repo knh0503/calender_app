@@ -136,3 +136,74 @@ def update_profile():
             'message': '프로필이 업데이트되었습니다.',
         })
     return render_template('proflie_setting.html')
+
+@api.route('/change_password', methods=['POST','GET'])
+@login_required
+def change_password():
+    user = current_user
+
+    if request.method == 'POST':
+        current_password = request.form['current-password']
+        new_password = request.form['new-password']
+        confirm_password = request.form['confirm-password']
+
+        if new_password != confirm_password:
+            return jsonify({
+                'flag' : False,
+                'message' : '새 비밀번호와 새 비밀번호 확인이 다릅니다.',
+            })
+        
+        if check_password_hash(user.password, current_password):
+            user.password = generate_password_hash(new_password)
+            db.session.commit()
+            return jsonify({
+                'flag' : True,
+                'message' : '성공적으로 비밀번호를 변경하였습니다.',
+            })
+        
+        else:            
+            return jsonify({
+                'flag' : False,
+                'message' : '현재 비밀번호가 다릅니다.',
+            })
+
+    return render_template('account_setting.html')
+
+@api.route('/change_email', methods=['POST','GET'])
+@login_required
+def change_email():
+
+    if request.method == 'POST':
+        user_email = request.form['user-email']
+
+        userExist = User.query.filter_by(email=user_email).first()
+        if userExist:
+            return jsonify({
+                'available' : False,
+                'message' : "이미 등록된 이메일입니다.",
+            })
+        else:
+            current_user.email = user_email
+            db.session.commit()
+            return jsonify({
+                'available' : True,
+                'message' : '이메일 주소를 새로 등록하였습니다.',
+                'email' : user_email,
+            })
+    return render_template('account_setting.html')
+
+@api.route('/change_phone', methods=['POST','GET'])
+@login_required
+def change_phone():
+
+    if request.method == 'POST':
+        user_phone = request.form['user-phone']
+
+        current_user.phone = user_phone
+        db.session.commit()
+        return jsonify({
+            'available' : True,
+            'message' : '휴대폰 번호를 새로 등록하였습니다.',
+            'phone' : user_phone,
+        })
+    return render_template('account_setting.html')

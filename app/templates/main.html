@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Calendar</title>
-    <link rel="stylesheet" href="/static/css/style_v2.css">
-    <script src="/static/js/script_v2.js" defer></script>
+    <title>Main</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="/static/js/main.js" defer></script>
 </head>
 <body>
     <nav class="nav-top">
@@ -16,8 +16,8 @@
                 <img src="{{ url_for('static', filename='images/settings.png') }}" class="nav-picture" id="setting-button">
                 <div class="dropdown-content" id="settingsMenu">
                     <a href="{{ url_for('views.profile_setting') }}" id="profile_button">Profile</a>
-                    <a href="{{ url_for('views.main') }}" id="account_button">Account</a>
-                    <a href="{{ url_for('views.main') }}" id="notifications_button">Notifications</a>
+                    <a href="{{ url_for('views.account_setting') }}" id="account_button">Account</a>
+                    <a href="{{ url_for('views.main') }}" id="logout_button">Logout</a>
                 </div>
             </div>
         </div>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calendar</title>
+    <link rel="stylesheet" href="/static/css/account_setting.css">
+    <script src="/static/js/account_setting.js" defer></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</head>
+<body>
+    <nav class="navigation-bar">
+        <div class="nav-item left">
+            <img src="{{ url_for('static', filename='images/left-arrow.png') }}" class="nav-picture" onclick="history.back();">
+        </div>
+        <div class="nav-item center">
+            계정 정보 수정
+        </div>
+    </nav>
+
+    <form id="account-setting-form" class="account-setting-form">
+        <div class="user-account" onclick="openPopup('#email-popup')">
+            <p>이메일</p>
+            <div class="input-div">
+                <p id="email-result">{{ user.email }}</p>
+                <img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="open-popup">
+            </div>
+        </div>
+
+        <div class="user-account" onclick="openPopup('#password-popup')">
+            <p>비밀변호 변경</p>
+            <div class="input-div">
+                <img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="open-popup">
+            </div>
+        </div>
+
+        <div class="user-account" onclick="openPopup('#phone-popup')">
+            <p>휴대폰 번호</p>
+            <div class="input-div">
+                <p id="phone-result">{{ user.phone }}</p>
+                <img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="open-popup">
+            </div>
+        </div>
+        <button type="button" id="delete-account-button">계정 삭제</button>
+    </form>
+
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div id="password-popup" class="popup">
+        <h3>비밀번호를 변경합니다.</h3>
+        <form id="password-form" class="popup-form" >
+            <input type="password" name="current-password" placeholder="현재 비밀번호" required>
+            <input type="password" name="new-password" placeholder="새 비밀번호" required>
+            <input type="password" name="confirm-password" placeholder="새 비밀번호 확인" required>
+            <div class="popup-button-div">
+                <button type="button" class="close-popup">취소</button>
+                <button type="submit">변경</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="email-popup" class="popup">
+        <h3>이메일을 변경합니다.</h3>
+        <form id="email-form" class="popup-form" >
+            <input type="email" id="user-email" name="user-email" placeholder="Email" required>
+            <div class="popup-button-div">
+                <button type="button" class="close-popup">취소</button>
+                <button type="submit">변경</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="phone-popup" class="popup">
+        <h3>휴대폰 번호를 변경합니다.</h3>
+        <form id="phone-form" class="popup-form" >
+            <input type="tel" id="user-phone" name="user-phone" placeholder="Phone Number" required>
+            <div class="popup-button-div">
+                <button type="button" class="close-popup">취소</button>
+                <button type="submit">변경</button>
+            </div>
+        </form>
+    </div>
+
+
+</body>
+</html>

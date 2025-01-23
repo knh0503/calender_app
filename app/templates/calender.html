@@ -2,14 +2,54 @@
 <html>
 <head>
     <title>Calendar</title>
-    <!-- CSS -->
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
-    <link rel="stylesheet" href="/static/css/style.css">
-    <!-- JavaScript -->
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
-    <script src="/static/js/script.js"></script>
+    <link rel="stylesheet" href="/static/css/style_v2.css">
+    <script src="/static/js/script_v2.js" defer></script>
 </head>
 <body>
-    <div id='calendar'></div>
+    <nav class="nav-top">
+        <div class="nav-item">
+            <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/logo_v2.png') }}" class="logo-picture"></a>
+        </div>
+        <div class="nav-item">
+            <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/comment-dots.png') }}" class="nav-picture" id="comment-button"></a>
+            <div class="dropdown">
+                <img src="{{ url_for('static', filename='images/settings.png') }}" class="nav-picture" id="setting-button">
+                <div class="dropdown-content" id="settingsMenu">
+                    <a href="{{ url_for('views.profile_setting') }}" id="profile_button">Profile</a>
+                    <a href="{{ url_for('views.account_setting') }}" id="account_button">Account</a>
+                    <a href="{{ url_for('views.main') }}" id="notifications_button">Notifications</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="calendar-container">
+        <div class="user-info">
+            <img src="{{ url_for('static', filename='images/profile/woman.png' if user.image_path == ''
+                else user.image_path) }}" class="profile-picture">
+            <div>
+                <p class="user-name">{{ user.username }}</p>
+                <p class="description">{{ user.description }}</p>
+            </div>
+        </div>
+        <div class="calendar">
+            <div class="calendar-header">
+                <button id="currentMonth"></button>
+                <div class="calendar-buttons">
+                    <button id="prevMonth" class="arrow-button"><img src="{{ url_for('static', filename='images/left-arrow.png') }}" class="arrow-picture"></button>
+                    <button id="nextMonth" class="arrow-button"><img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="arrow-picture"></button>
+                    <button id="weekCalendar" class="calendar-button">M</button>
+                </div>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+    </div>
+    <nav class="nav-bottom">
+        <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/calendar.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/diary-bookmarks.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/add.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/list.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/bell.png') }}" class="nav-picture"></a>
+    </nav>
 </body>
 </html>

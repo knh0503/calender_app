@@ -25,10 +25,10 @@ def sign_in():
 @views.route('/main')
 @login_required
 def main():
-    return render_template('calender_v2.html', user=current_user)
+    return render_template('main.html', user=current_user)
 
-@views.route('/calendar_v1')
-def calendar_v1():
+@views.route('/calendar')
+def calendar():
     return render_template('calender.html')
 
 @views.route('/users_and_events')
@@ -39,3 +39,8 @@ def users_and_events():
 @login_required
 def profile_setting():
     return render_template('profile_setting.html', user=current_user)
+
+@views.route('/account_setting')
+@login_required
+def account_setting():
+    return render_template('account_setting.html', user=current_user)
