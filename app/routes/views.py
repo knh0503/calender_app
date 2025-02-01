@@ -8,7 +8,7 @@ def root():
     if current_user.is_authenticated:
         return redirect('/main')
     else:
-        redirect('/welcome')
+        return redirect('/welcome')
 
 @views.route('/welcome')
 def welcome():
@@ -28,8 +28,9 @@ def main():
     return render_template('main.html', user=current_user)
 
 @views.route('/calendar')
+@login_required
 def calendar():
-    return render_template('calender.html')
+    return render_template('calender.html', user=current_user)
 
 @views.route('/users_and_events')
 def users_and_events():

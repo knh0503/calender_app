@@ -17,7 +17,7 @@
                 <div class="dropdown-content" id="settingsMenu">
                     <a href="{{ url_for('views.profile_setting') }}" id="profile_button">Profile</a>
                     <a href="{{ url_for('views.account_setting') }}" id="account_button">Account</a>
-                    <a href="{{ url_for('views.main') }}" id="logout_button">Logout</a>
+                    <a href="{{ url_for('api.logout') }}" id="logout_button">Logout</a>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
         </div>
     </div>
     <nav class="nav-bottom">
-        <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/calendar.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('views.calendar') }}"><img src="{{ url_for('static', filename='images/calendar.png') }}" class="nav-picture"></a>
         <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/diary-bookmarks.png') }}" class="nav-picture"></a>
         <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/add.png') }}" class="nav-picture"></a>
         <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/list.png') }}" class="nav-picture"></a>

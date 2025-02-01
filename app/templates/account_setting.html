@@ -18,30 +18,31 @@
         </div>
     </nav>
 
-    <form id="account-setting-form" class="account-setting-form">
-        <div class="user-account" onclick="openPopup('#email-popup')">
-            <p>이메일</p>
-            <div class="input-div">
-                <p id="email-result">{{ user.email }}</p>
-                <img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="open-popup">
-            </div>
+    <div class="user-account" onclick="openPopup('#email-popup')">
+        <p>이메일</p>
+        <div class="input-div">
+            <p id="email-result">{{ user.email }}</p>
+            <img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="open-popup">
         </div>
+    </div>
 
-        <div class="user-account" onclick="openPopup('#password-popup')">
-            <p>비밀변호 변경</p>
-            <div class="input-div">
-                <img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="open-popup">
-            </div>
+    <div class="user-account" onclick="openPopup('#password-popup')">
+        <p>비밀변호 변경</p>
+        <div class="input-div">
+            <img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="open-popup">
         </div>
+    </div>
 
-        <div class="user-account" onclick="openPopup('#phone-popup')">
-            <p>휴대폰 번호</p>
-            <div class="input-div">
-                <p id="phone-result">{{ user.phone }}</p>
-                <img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="open-popup">
-            </div>
+    <div class="user-account" onclick="openPopup('#phone-popup')">
+        <p>휴대폰 번호</p>
+        <div class="input-div">
+            <p id="phone-result">{{ user.phone }}</p>
+            <img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="open-popup">
         </div>
-        <button type="button" id="delete-account-button">계정 삭제</button>
+    </div>
+    
+    <form class="delete-account-form" action="/delete_account" method="post">
+        <button type="submit" id="delete-account-button">계정 삭제</button>
     </form>
 
     <div class="modal-overlay" id="modal-overlay"></div>

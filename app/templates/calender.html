@@ -2,8 +2,11 @@
 <html>
 <head>
     <title>Calendar</title>
-    <link rel="stylesheet" href="/static/css/style_v2.css">
-    <script src="/static/js/script_v2.js" defer></script>
+    <link rel="stylesheet" href="/static/css/calendar.css">
+    <script src="/static/js/calendar.js" defer></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
 <body>
     <nav class="nav-top">
@@ -23,29 +26,117 @@
         </div>
     </nav>
 
-    <div class="calendar-container">
-        <div class="user-info">
-            <img src="{{ url_for('static', filename='images/profile/woman.png' if user.image_path == ''
-                else user.image_path) }}" class="profile-picture">
-            <div>
-                <p class="user-name">{{ user.username }}</p>
-                <p class="description">{{ user.description }}</p>
-            </div>
+    <div class="user-info">
+        <img src="{{ url_for('static', filename='images/profile/woman.png' if user.image_path == ''
+            else user.image_path) }}" class="profile-picture">
+        <div>
+            <p class="user-name">{{ user.username }}</p>
+            <p class="description">{{ user.description }}</p>
         </div>
+    </div>
+
+    <div class="calendar-container">
         <div class="calendar">
             <div class="calendar-header">
                 <button id="currentMonth"></button>
                 <div class="calendar-buttons">
                     <button id="prevMonth" class="arrow-button"><img src="{{ url_for('static', filename='images/left-arrow.png') }}" class="arrow-picture"></button>
                     <button id="nextMonth" class="arrow-button"><img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="arrow-picture"></button>
-                    <button id="weekCalendar" class="calendar-button">M</button>
+                    <button id="addEventButton">Add</button>
                 </div>
             </div>
             <div class="calendar-grid" id="calendarGrid"></div>
         </div>
+        <form id="eventUpdateForm" class="eventForm">
+            <input type="text" id="eventTitle" name="eventTitle" placeholder="일정을 입력하세요." required>
+            <div class="date-div">
+                <div class="toggle-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="allDay" name="allDay">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="toggle-label">종일</span>
+                </div>
+                <div class="date-row time">
+                    <input type="time" id="startTime" name="startTime" value="09:00">
+                    <span class="divider">→</span>
+                    <input type="time" id="endTime" name="endTime" value="10:00">
+                </div>
+                <div class="date-row date">
+                    <input type="date" id="startDate" name="startDate" value="2024-01-01">
+                    <span class="divider">→</span>
+                    <input type="date" id="endDate" name="endDate" value="2024-01-01">
+                </div>
+            </div>
+
+            <input type="text" id="description" name="description" placeholder="설명">
+            <input type="text" id="category" name="category" placeholder="분류">
+            <input type="text" id="location" name="location" placeholder="장소">
+            <input type="file" id="file" name="file" placeholder="첨부 파일">
+            <input type="text" id="alarm" name="alarm" placeholder="알람">
+            <input type="text" id="color" name="color" placeholder="색상">
+
+            <div class="modalButtonDiv">
+                <button type="button" id="closeAddEventModal">Cancel</button>
+                <button type="submit">Save Event</button>
+            </div>
+        </form>
     </div>
+
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <h2>일정 추가</h2>
+            <form id="eventForm" class="eventForm">
+                <input type="text" id="eventTitle" name="eventTitle" placeholder="일정을 입력하세요." required>
+                <div class="date-div">
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="allDay" name="allDay">
+                            <span class="slider"></span>
+                        </label>
+                        <span class="toggle-label">종일</span>
+                    </div>
+                    <div class="date-row time">
+                        <input type="time" id="startTime" name="startTime" value="09:00">
+                        <span class="divider">→</span>
+                        <input type="time" id="endTime" name="endTime" value="10:00">
+                    </div>
+                    <div class="date-row date">
+                        <input type="date" id="startDate" name="startDate" value="2024-01-01">
+                        <span class="divider">→</span>
+                        <input type="date" id="endDate" name="endDate" value="2024-01-01">
+                    </div>
+                </div>
+
+                <input type="text" id="description" name="description" placeholder="설명">
+                <input type="text" id="category" name="category" placeholder="분류">
+                <input type="text" id="location" name="location" placeholder="장소">
+                <input type="file" id="file" name="file" placeholder="첨부 파일">
+                <input type="text" id="alarm" name="alarm" placeholder="알람">
+                <input type="text" id="color" name="color" placeholder="색상">
+
+                <div class="modalButtonDiv">
+                    <button type="button" id="closeAddEventModal">Cancel</button>
+                    <button type="submit">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="dateEventsModal" class="modal">
+        <div class="modal-content">
+            <h4><span id="selectedDateDisplay"></span></h4>
+            <div id="dateEventDetail"></div>
+            <div id="dateEventsList"></div>
+            <div class="modalButtonDiv">
+                <button type="button" id="closeEventModal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <nav class="nav-bottom">
-        <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/calendar.png') }}" class="nav-picture"></a>
+        <a href="{{ url_for('views.calendar') }}"><img src="{{ url_for('static', filename='images/calendar.png') }}" class="nav-picture"></a>
         <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/diary-bookmarks.png') }}" class="nav-picture"></a>
         <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/add.png') }}" class="nav-picture"></a>
         <a href="{{ url_for('views.main') }}"><img src="{{ url_for('static', filename='images/list.png') }}" class="nav-picture"></a>

@@ -112,3 +112,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// delete account
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.delete-account-form').addEventListener('submit', function(e){
+        if (!confirm('정말로 계정을 탈퇴하시겠습니까?')) {
+            e.preventDefault();
+        }
+    });
+});

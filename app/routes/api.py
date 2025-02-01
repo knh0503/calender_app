@@ -1,11 +1,12 @@
 import os
 from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
-from app.models.model import User
+from app.models.model import User, Event
 from app import db
-from flask_login import login_user, login_required, current_user
+from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from datetime import datetime
 
 api = Blueprint('api', __name__)
 
@@ -75,6 +76,9 @@ def register():
 @api.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
+        if current_user.is_authenticated:
+            logout_user()
+
         email = request.form.get('user-email')
         password = request.form.get('user-pwd')
         user = User.query.filter_by(email=email).first()
@@ -96,6 +100,21 @@ def login():
                 'message' : '이메일을 다시 확인해주세요.',
             })
     return render_template('sign_in.html')
+
+@api.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('views.welcome'))
+
+@api.route('/delete_account', methods=['POST'])
+@login_required
+def delete_account():
+    user = current_user
+    db.session.delete(user)
+    db.session.commit()
+    logout_user()
+    return redirect(url_for('views.welcome'))
 
 @api.route('/update_profile', methods=['POST','GET'])
 @login_required
@@ -207,3 +226,122 @@ def change_phone():
             'phone' : user_phone,
         })
     return render_template('account_setting.html')
+
+@api.route('/add_event', methods=['POST'])
+def add_event():
+    title = request.form['eventTitle']
+    allDay = request.form.get('allDay', False)
+    if allDay:
+        allDay = True
+        startDate = datetime.strptime(request.form['startDate'], '%Y-%m-%d').replace(hour=0, minute=0)
+        endDate = datetime.strptime(request.form['endDate'], '%Y-%m-%d').replace(hour=0, minute=0)
+    else:
+        allDay = False
+        startDate = datetime.strptime(f"{request.form['startDate']} {request.form['startTime']}", '%Y-%m-%d %H:%M')
+        endDate = datetime.strptime(f"{request.form['startDate']} {request.form['endTime']}", '%Y-%m-%d %H:%M')
+    
+    description = request.form['description']
+    category = request.form['category']
+    location = request.form['location']
+    file = request.files['file']
+    if file.filename == '':
+        db_file_path = ''
+    else:
+        file_name = secure_filename(file.filename)
+        file_path = os.path.join('app/static/images/calendar', file_name)
+        file.save(file_path)
+        # db에 저장할 경로는 static 이후부터
+        db_file_path = f'images/calendar/{file_name}'
+    alarm = request.form['alarm']
+    color = request.form['color']
+
+    event = Event(title=title,
+                  description=description,
+                  start_date=startDate,
+                  end_date=endDate,
+                  user_id=current_user.id,
+                  category=category,
+                  location=location,
+                  file=db_file_path,
+                  alarm=alarm,
+                  color=color,
+                  all_day = allDay
+                  )
+    
+    db.session.add(event)
+    db.session.commit()
+
+    return jsonify ({
+        'title': title,
+        'date' : f"{startDate} ~ {endDate}",
+        'message' : f"{title} on {startDate} ~ {endDate}",
+    })
+
+@api.route('/update_event', methods=['POST'])
+def update_event():
+    title = request.form['eventTitle']
+    allDay = request.form.get('allDay', False)
+    if allDay:
+        allDay = True
+        startDate = datetime.strptime(request.form['startDate'], '%Y-%m-%d').replace(hour=0, minute=0)
+        endDate = datetime.strptime(request.form['endDate'], '%Y-%m-%d').replace(hour=0, minute=0)
+    else:
+        allDay = False
+        startDate = datetime.strptime(f"{request.form['startDate']} {request.form['startTime']}", '%Y-%m-%d %H:%M')
+        endDate = datetime.strptime(f"{request.form['startDate']} {request.form['endTime']}", '%Y-%m-%d %H:%M')
+    
+    description = request.form['description']
+    category = request.form['category']
+    location = request.form['location']
+    file = request.files['file']
+    if file.filename == '':
+        db_file_path = ''
+    else:
+        file_name = secure_filename(file.filename)
+        file_path = os.path.join('app/static/images/calendar', file_name)
+        file.save(file_path)
+        # db에 저장할 경로는 static 이후부터
+        db_file_path = f'images/calendar/{file_name}'
+    alarm = request.form['alarm']
+    color = request.form['color']
+
+    event = Event(title=title,
+                  description=description,
+                  start_date=startDate,
+                  end_date=endDate,
+                  user_id=current_user.id,
+                  category=category,
+                  location=location,
+                  file=db_file_path,
+                  alarm=alarm,
+                  color=color,
+                  all_day = allDay
+                  )
+    
+    db.session.add(event)
+    db.session.commit()
+
+    return jsonify ({
+        'title': title,
+        'date' : f"{startDate} ~ {endDate}",
+        'message' : f"{title} on {startDate} ~ {endDate}",
+    })
+
+@api.route('/get_events', methods=['GET'])
+def get_events():
+    events = Event.query.all()
+    events = Event.query.filter_by(user_id=current_user.id).all()
+    events_data = [{
+        'id' : event.id,
+        'title' : event.title,
+        'description' : event.description,
+        'start' : event.start_date.isoformat(),
+        'end' : event.end_date.isoformat(),
+        'category' : event.category,
+        'location' : event.location,
+        'file' : event.file,
+        'alarm' : event.alarm,
+        'color' : event.color,
+        'allDay' : event.all_day
+    } for event in events]
+    return jsonify(events_data)
