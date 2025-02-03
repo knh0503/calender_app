@@ -36,51 +36,15 @@
     </div>
 
     <div class="calendar-container">
-        <div class="calendar">
-            <div class="calendar-header">
-                <button id="currentMonth"></button>
-                <div class="calendar-buttons">
-                    <button id="prevMonth" class="arrow-button"><img src="{{ url_for('static', filename='images/left-arrow.png') }}" class="arrow-picture"></button>
-                    <button id="nextMonth" class="arrow-button"><img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="arrow-picture"></button>
-                    <button id="addEventButton">Add</button>
-                </div>
+        <div class="calendar-header">
+            <button id="currentMonth"></button>
+            <div class="calendar-buttons">
+                <button id="prevMonth" class="arrow-button"><img src="{{ url_for('static', filename='images/left-arrow.png') }}" class="arrow-picture"></button>
+                <button id="nextMonth" class="arrow-button"><img src="{{ url_for('static', filename='images/right-arrow.png') }}" class="arrow-picture"></button>
+                <button id="addEventButton">Add</button>
             </div>
-            <div class="calendar-grid" id="calendarGrid"></div>
         </div>
-        <form id="eventUpdateForm" class="eventForm">
-            <input type="text" id="eventTitle" name="eventTitle" placeholder="일정을 입력하세요." required>
-            <div class="date-div">
-                <div class="toggle-container">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="allDay" name="allDay">
-                        <span class="slider"></span>
-                    </label>
-                    <span class="toggle-label">종일</span>
-                </div>
-                <div class="date-row time">
-                    <input type="time" id="startTime" name="startTime" value="09:00">
-                    <span class="divider">→</span>
-                    <input type="time" id="endTime" name="endTime" value="10:00">
-                </div>
-                <div class="date-row date">
-                    <input type="date" id="startDate" name="startDate" value="2024-01-01">
-                    <span class="divider">→</span>
-                    <input type="date" id="endDate" name="endDate" value="2024-01-01">
-                </div>
-            </div>
-
-            <input type="text" id="description" name="description" placeholder="설명">
-            <input type="text" id="category" name="category" placeholder="분류">
-            <input type="text" id="location" name="location" placeholder="장소">
-            <input type="file" id="file" name="file" placeholder="첨부 파일">
-            <input type="text" id="alarm" name="alarm" placeholder="알람">
-            <input type="text" id="color" name="color" placeholder="색상">
-
-            <div class="modalButtonDiv">
-                <button type="button" id="closeAddEventModal">Cancel</button>
-                <button type="submit">Save Event</button>
-            </div>
-        </form>
+        <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
     <div class="modal-overlay" id="modal-overlay"></div>
@@ -114,8 +78,10 @@
                 <input type="text" id="location" name="location" placeholder="장소">
                 <input type="file" id="file" name="file" placeholder="첨부 파일">
                 <input type="text" id="alarm" name="alarm" placeholder="알람">
-                <input type="text" id="color" name="color" placeholder="색상">
-
+                <div class="color-picker-container">
+                    <input type="color" id="color" name="color">
+                    <label for="color" class="color-label">색상 선택</label>
+                </div>
                 <div class="modalButtonDiv">
                     <button type="button" id="closeAddEventModal">Cancel</button>
                     <button type="submit">Save Event</button>
@@ -133,6 +99,49 @@
                 <button type="button" id="closeEventModal">Cancel</button>
             </div>
         </div>
+    </div>
+
+    <div id="eventUpdateModal" class="modal">
+        <div id="eventUpdateNav">
+            <button id="prevDiv" class="arrow-button"><img src="{{ url_for('static', filename='images/left-arrow.png') }}" class="arrow-picture"></button>
+            <h3 id="dateDisplay">일정 수정</h3>
+        </div>
+        <form id="eventUpdateForm" class="eventForm">
+            <input type="hidden" id="newEventID" name="eventID" required>
+            <input type="text" id="newEventTitle" name="eventTitle" placeholder="일정을 입력하세요." required>
+            <div class="date-div">
+                <div class="toggle-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="newAllDay" name="allDay">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="toggle-label">종일</span>
+                </div>
+                <div class="date-row time">
+                    <input type="time" id="newStartTime" name="startTime" value="09:00">
+                    <span class="divider">→</span>
+                    <input type="time" id="newEndTime" name="endTime" value="10:00">
+                </div>
+                <div class="date-row date">
+                    <input type="date" id="newStartDate" name="startDate" value="2024-01-01">
+                    <span class="divider">→</span>
+                    <input type="date" id="newEndDate" name="endDate" value="2024-01-01">
+                </div>
+            </div>
+
+            <input type="text" id="newDescription" name="description" placeholder="설명">
+            <input type="text" id="newCategory" name="category" placeholder="분류">
+            <input type="text" id="newLocation" name="location" placeholder="장소">
+            <input type="file" id="newFile" name="file" placeholder="첨부 파일">
+            <input type="text" id="newAlarm" name="alarm" placeholder="알람">
+            <div class="color-picker-container">
+                <input type="color" id="newColor" name="color">
+                <label for="newColor" class="color-label">색상 선택</label>
+            </div>
+            <div class="modalButtonDiv">
+                <button type="submit">Save Event</button>
+            </div>
+        </form>
     </div>
 
     <nav class="nav-bottom">

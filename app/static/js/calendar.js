@@ -544,6 +544,10 @@ class Calendar_v3 {
         document.getElementById('closeEventModal').addEventListener('click', () => this.closeModal());
         document.querySelector('.modal-overlay').addEventListener('click', () => this.closeModal());
         document.getElementById('eventForm').addEventListener('submit', (e) => this.addEvent(e));
+        document.getElementById('prevDiv').addEventListener('click', () => {
+            document.getElementById('dateEventsModal').style.display = "block";
+            document.getElementById('eventUpdateModal').style.display = "none";
+        });
         document.getElementById('eventUpdateForm').addEventListener('submit', (e) => this.updateEvent(e));
     }   
 
@@ -606,9 +610,7 @@ class Calendar_v3 {
 
         // add events
         if (this.events[dateKey]) {
-            // console.log(this.events[dateKey]);
             this.events[dateKey].forEach(event => {
-                // console.log(event);
                 const eventDiv = document.createElement('div');
                 eventDiv.className = 'event-item';
 
@@ -622,12 +624,11 @@ class Calendar_v3 {
                     eventDiv.style.setProperty('--event-bar-color', event.color || '#f1f1f1');
                     eventDiv.textContent = `${event.start.split('T')[1].substring(0,5)} ${event.title}`;
                 }
-                eventDiv.addEventListener('click', () => this.showEventDetail(event));
                 cell.appendChild(eventDiv);
             })
         }
 
-        cell.addEventListener('click', () => this.showEventDetail(date));
+        cell.addEventListener('click', () => this.showDateEvents(date));
         document.getElementById('calendarGrid').appendChild(cell);
     }
 
@@ -650,8 +651,9 @@ class Calendar_v3 {
 
     closeModal() {
         document.querySelector('.modal-overlay').style.display = "none";
-        document.querySelector('.modal').style.display = "none";
-        document.querySelector('#dateEventsModal').style.display = "none";
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.style.display = 'none';
+        })
     }
 
     addEvent(e) {
@@ -688,60 +690,75 @@ class Calendar_v3 {
         });
     }
 
-    // showDateEvents(date) {
-    //     const dateKey = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString().split('T')[0];
-    //     const eventsForDate = this.events[dateKey] || [];
-    //     const dayList = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+    showDateEvents(date) {
+        const dateKey = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString().split('T')[0];
+        const eventsForDate = this.events[dateKey] || [];
+        const dayList = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 
-    //     const modalOverlay = document.getElementById('modal-overlay');
-    //     const eventListModal = document.getElementById('dateEventsModal');
-    //     const eventListContainer = document.getElementById('dateEventsList');
-    //     const eventDetail = document.getElementById('dateEventDetail');
-    //     const dateDisplay = document.getElementById('selectedDateDisplay');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const eventListModal = document.getElementById('dateEventsModal');
+        const eventListContainer = document.getElementById('dateEventsList');
+        const dateDisplay = document.getElementById('selectedDateDisplay');
+        const eventUpdateModal = document.getElementById('eventUpdateModal');
 
-    //     // Clear previous events
-    //     eventListContainer.innerHTML = '';
-    //     eventDetail.innerHTML = '';
-    //     dateDisplay.textContent = `${date.getMonth()+1}월 ${date.getDate()}일 ${dayList[date.getDay()]}`;
+        // Clear previous events
+        eventUpdateModal.style.display = "none";
+        eventListContainer.innerHTML = '';
+        dateDisplay.textContent = `${date.getMonth()+1}월 ${date.getDate()}일 ${dayList[date.getDay()]}`;
 
-    //     // Populate events
-    //     if (eventsForDate.length > 0) {
-    //         eventsForDate.forEach((event, index) => {
-    //             const dateEventItem = document.createElement('div');
-    //             const eventTitle = document.createElement('div');
-    //             const eventDuration = document.createElement('div');
+        // Populate events
+        if (eventsForDate.length > 0) {
+            eventsForDate.forEach((event, index) => {
+                const dateEventItem = document.createElement('div');
+                const eventTitle = document.createElement('div');
+                const eventDuration = document.createElement('div');
 
-    //             eventTitle.className = "event-title";
-    //             eventDuration.className = "event-duration";
+                eventTitle.className = "event-title";
+                eventDuration.className = "event-duration";
+                dateEventItem.style.setProperty('--event-bar-color', event.color || '#f1f1f1');
 
-    //             if (event.allDay) {
-    //                 dateEventItem.className = 'date-event-item allDay';
-    //                 eventTitle.textContent = `${event.title}`;
-    //                 eventDuration.textContent = "종일";
-    //             }
-    //             else {
-    //                 dateEventItem.className = 'date-event-item notAllDay';
-    //                 eventTitle.textContent = `${event.title}`;
-    //                 eventDuration.textContent = `${event.start.split('T')[1].substring(0,5)} - ${event.end.split('T')[1].substring(0,5)}`
-    //             }
-    //             dateEventItem.appendChild(eventTitle);
-    //             dateEventItem.appendChild(eventDuration);
-    //             eventListContainer.appendChild(dateEventItem);
-    //             dateEventItem.addEventListener('click', () => this.showEventDetail(event));
-    //         });
-    //     } else {
-    //         const noEventsMsg = document.createElement('div');
-    //         noEventsMsg.textContent = '일정이 없습니다.';
-    //         eventListContainer.appendChild(noEventsMsg);
-    //     }
+                if (event.allDay) {
+                    dateEventItem.className = 'date-event-item allDay';
+                    eventTitle.textContent = `${event.title}`;
+                    eventDuration.textContent = "종일";
+                }
+                else {
+                    dateEventItem.className = 'date-event-item notAllDay';
+                    eventTitle.textContent = `${event.title}`;
+                    eventDuration.textContent = `${event.start.split('T')[1].substring(0,5)} - ${event.end.split('T')[1].substring(0,5)}`
+                }
+                dateEventItem.appendChild(eventTitle);
+                dateEventItem.appendChild(eventDuration);
+                eventListContainer.appendChild(dateEventItem);
+                dateEventItem.addEventListener('click', () => this.showEventDetail(event));
+            });
+        } else {
+            const noEventsMsg = document.createElement('div');
+            noEventsMsg.textContent = '일정이 없습니다.';
+            eventListContainer.appendChild(noEventsMsg);
+        }
 
-    //     modalOverlay.style.display = 'block';
-    //     eventListModal.style.display = 'block';
-    // }
+        modalOverlay.style.display = 'block';
+        eventListModal.style.display = 'block';
+    }
 
     showEventDetail(event) {
-        const eventUpdateForm = document.getElementById('eventUpdateForm');
-        eventUpdateForm.style.display = 'flex';
+        document.getElementById('dateEventsModal').style.display = "none";
+        document.getElementById('eventUpdateModal').style.display = "block";
+
+        document.getElementById('newEventID').value = event.id;
+        document.getElementById('newEventTitle').value = event.title;
+        document.getElementById('newAllDay').value = event.allDay;
+        document.getElementById('newStartTime').value = event.start.split('T')[1].substring(0,5);
+        document.getElementById('newEndTime').value = event.end.split('T')[1].substring(0,5);
+        document.getElementById('newStartDate').value = event.start.split('T')[0];
+        document.getElementById('newEndDate').value = event.end.split('T')[0];
+        document.getElementById('newDescription').value = event.description;
+        document.getElementById('newCategory').value = event.category;
+        document.getElementById('newLocation').value = event.location;
+        document.getElementById('newFile').value = event.file;
+        document.getElementById('newAlarm').value = event.alarm;
+        document.getElementById('newColor').value = event.color;
     }
 
     deleteEvent(date, index) {

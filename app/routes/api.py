@@ -279,6 +279,7 @@ def add_event():
 
 @api.route('/update_event', methods=['POST'])
 def update_event():
+    id = request.form['eventID']
     title = request.form['eventTitle']
     allDay = request.form.get('allDay', False)
     if allDay:
@@ -305,26 +306,25 @@ def update_event():
     alarm = request.form['alarm']
     color = request.form['color']
 
-    event = Event(title=title,
-                  description=description,
-                  start_date=startDate,
-                  end_date=endDate,
-                  user_id=current_user.id,
-                  category=category,
-                  location=location,
-                  file=db_file_path,
-                  alarm=alarm,
-                  color=color,
-                  all_day = allDay
-                  )
+    event = Event.query.filter_by(id=id).first()
+
+    event.title = title
+    event.all_day = allDay
+    event.start_date = startDate
+    event.end_date = endDate
+    event.description = description
+    event.category = category
+    event.location = location
+    event.file = db_file_path
+    event.alarm = alarm
+    event.color = color
     
-    db.session.add(event)
     db.session.commit()
 
     return jsonify ({
         'title': title,
         'date' : f"{startDate} ~ {endDate}",
-        'message' : f"{title} on {startDate} ~ {endDate}",
+        'message' : f"{title} on {startDate} ~ {endDate}이 수정되었습니다.",
     })
 
 @api.route('/get_events', methods=['GET'])

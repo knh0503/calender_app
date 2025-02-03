@@ -62,8 +62,7 @@ body {
     height: 70px;
     display: flex;
     align-items: center;
-    width: 90%;
-    margin: 20px 40px;
+    margin: 20px;
 }
 .profile-picture {
     border-radius: 50%;
@@ -85,22 +84,6 @@ body {
 .calendar-container {
     width: 100%;
     margin: auto;
-    display: flex;
-    gap: 5px;
-    /* border: 2px solid #ddd; */
-}
-.calendar {
-    width: 100%;
-    margin: auto;
-    flex: 5 1 0;
-}
-#eventUpdateForm {
-    display: none;
-    flex: 1 1 0;
-    padding: 10px;
-    min-width: 200px;
-    border-left: 1px solid #ddd;
-
 }
 .calendar-header {
     display: flex;
@@ -155,6 +138,9 @@ body {
     max-width: 70px;
     padding: 2px;
     position: relative;
+}
+.calendar-cell:hover {
+    cursor: pointer;
 }
 .day-header {
     border-bottom: 1px solid #555;
@@ -361,6 +347,39 @@ transform: translateX(15px);
     font-size: 0.8em;
 }
 
+/* 이벤트 수정창 */
+#eventUpdateNav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+/* 전체 컨테이너 스타일 */
+.color-picker-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 기본 input 숨기기 */
+.color-picker-container {
+    border-bottom: 2px solid #ddd;
+}
+.color-picker-container input {
+    margin-left: 10px;
+    border: none;
+    width: 20px;
+    padding: 0;
+    cursor: pointer;
+    background-color: transparent;
+}
+.color-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: 0.3s;
+}
 /* 하단 네비게이션 바 */
 .nav-bottom {
     position: fixed;
