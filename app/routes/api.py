@@ -239,19 +239,15 @@ def add_event():
         allDay = False
         startDate = datetime.strptime(f"{request.form['startDate']} {request.form['startTime']}", '%Y-%m-%d %H:%M')
         endDate = datetime.strptime(f"{request.form['startDate']} {request.form['endTime']}", '%Y-%m-%d %H:%M')
-    
+    if (startDate > endDate):
+        return jsonify ({
+            'flag'    : False,
+            'message' : '날짜를 다시 확인해주세요.',
+        })
+
     description = request.form['description']
     category = request.form['category']
     location = request.form['location']
-    file = request.files['file']
-    if file.filename == '':
-        db_file_path = ''
-    else:
-        file_name = secure_filename(file.filename)
-        file_path = os.path.join('app/static/images/calendar', file_name)
-        file.save(file_path)
-        # db에 저장할 경로는 static 이후부터
-        db_file_path = f'images/calendar/{file_name}'
     alarm = request.form['alarm']
     color = request.form['color']
 
@@ -262,7 +258,6 @@ def add_event():
                   user_id=current_user.id,
                   category=category,
                   location=location,
-                  file=db_file_path,
                   alarm=alarm,
                   color=color,
                   all_day = allDay
@@ -272,9 +267,8 @@ def add_event():
     db.session.commit()
 
     return jsonify ({
-        'title': title,
-        'date' : f"{startDate} ~ {endDate}",
-        'message' : f"{title} on {startDate} ~ {endDate}",
+        'flag'  : True,
+        'message' : f"{title} on {startDate} ~ {endDate}이 새로 등록되었습니다.",
     })
 
 @api.route('/update_event', methods=['POST'])
@@ -290,22 +284,17 @@ def update_event():
         allDay = False
         startDate = datetime.strptime(f"{request.form['startDate']} {request.form['startTime']}", '%Y-%m-%d %H:%M')
         endDate = datetime.strptime(f"{request.form['startDate']} {request.form['endTime']}", '%Y-%m-%d %H:%M')
+    if (startDate > endDate):
+        return jsonify ({
+            'flag'    : False,
+            'message' : '날짜를 다시 확인해주세요.',
+        })
     
     description = request.form['description']
     category = request.form['category']
     location = request.form['location']
-    file = request.files['file']
-    if file.filename == '':
-        db_file_path = ''
-    else:
-        file_name = secure_filename(file.filename)
-        file_path = os.path.join('app/static/images/calendar', file_name)
-        file.save(file_path)
-        # db에 저장할 경로는 static 이후부터
-        db_file_path = f'images/calendar/{file_name}'
     alarm = request.form['alarm']
     color = request.form['color']
-
     event = Event.query.filter_by(id=id).first()
 
     event.title = title
@@ -315,15 +304,13 @@ def update_event():
     event.description = description
     event.category = category
     event.location = location
-    event.file = db_file_path
     event.alarm = alarm
     event.color = color
     
     db.session.commit()
 
     return jsonify ({
-        'title': title,
-        'date' : f"{startDate} ~ {endDate}",
+        'flag' : True,
         'message' : f"{title} on {startDate} ~ {endDate}이 수정되었습니다.",
     })
 
@@ -339,7 +326,6 @@ def get_events():
         'end' : event.end_date.isoformat(),
         'category' : event.category,
         'location' : event.location,
-        'file' : event.file,
         'alarm' : event.alarm,
         'color' : event.color,
         'allDay' : event.all_day

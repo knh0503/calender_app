@@ -30,7 +30,6 @@ class Event(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     category = db.Column(db.String(500))
     location = db.Column(db.String(500))
-    file = db.Column(db.String(500))
     alarm = db.Column(db.String(500))
     color = db.Column(db.String(500))
     all_day = db.Column(db.Boolean, default=False)
