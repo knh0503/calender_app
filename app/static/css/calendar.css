@@ -83,6 +83,7 @@ body {
 /* 캘린더 */
 .calendar-container {
     width: 100%;
+    max-width: 700px;
     margin: auto;
 }
 .calendar-header {
@@ -132,15 +133,16 @@ body {
     grid-template-columns: repeat(7, 1fr);
 }
 .calendar-cell {
+    display: block;
+    width: 100%;
     text-align: center;
     background: white;
     min-height: 70px;
-    max-width: 70px;
     padding: 2px;
-    position: relative;
+    box-sizing: border-box;
 }
 .calendar-cell:hover {
-    cursor: pointer;
+    cursor: default;
 }
 .day-header {
     border-bottom: 1px solid #555;
@@ -166,8 +168,10 @@ body {
 .event-item {
     text-align: left;
     align-content: center;
-    padding: 1px 5px;
+    padding: 2px 5px;
     font-size: 0.7em;
+    font-weight: bold;
+    color: white;
     z-index: 999;
     border-radius: 3px;
     margin-bottom: 3px;
@@ -175,6 +179,10 @@ body {
     overflow: hidden;  /* 넘치는 텍스트 숨기기 */
     text-overflow: ellipsis;  /* 넘치는 부분 '...' 처리 */
     white-space: nowrap;  /* 줄 바꿈 방지 */
+    box-sizing: border-box;
+}
+.event-item.not-all {
+    color: black;
 }
 .event-item.not-all::before {
     content: "";
@@ -232,7 +240,40 @@ body {
     border-bottom: 2px solid black;
 }
 
-
+/* 지역 검색창 */
+#locationDiv, #newLocationDiv {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+#locationInput, #newLocationInput {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+#locationInput input, #newLocationInput input {
+    flex: 1;
+}
+#locationInput button, #newLocationInput button {
+    padding: 7px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4a90e2;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#locationDropdown, #newLocationDropdown {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+}
 /* 날짜 입력 */
 .date-row {
     width: 100%;
@@ -321,6 +362,7 @@ transform: translateX(15px);
     margin-bottom: 20px;
 }
 .date-event-item {
+    box-sizing: border-box;
     width: 100%;
     padding: 10px;
     position : relative;

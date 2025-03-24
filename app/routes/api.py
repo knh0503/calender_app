@@ -2,11 +2,15 @@ import os
 from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
 from app.models.model import User, Event
 from app import db
+from config import Config
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from datetime import datetime
+import urllib.request
+import xml.etree.ElementTree as ET
+from io import StringIO
 
 api = Blueprint('api', __name__)
 
@@ -292,7 +296,7 @@ def update_event():
     
     description = request.form['description']
     category = request.form['category']
-    location = request.form['location']
+    location = request.form['locationData']
     alarm = request.form['alarm']
     color = request.form['color']
     event = Event.query.filter_by(id=id).first()
@@ -331,3 +335,65 @@ def get_events():
         'allDay' : event.all_day
     } for event in events]
     return jsonify(events_data)
+
+@api.route('/mapSearch', methods=['POST'])
+def mapSearch():
+    try:
+        data = request.json
+        place = data.get('place')
+
+        client_id = Config.SEARCH_CLIENT_ID
+        client_secret = Config.SEARCH_CLIENT_SECRET
+
+        encText = urllib.parse.quote(place)
+        url = "https://openapi.naver.com/v1/search/local.xml?query=" + encText + "&display=10&start=1&sort=random" # JSON 결과
+        req = urllib.request.Request(url)
+        req.add_header("X-Naver-Client-Id", client_id)
+        req.add_header("X-Naver-Client-Secret", client_secret)
+        
+        response = urllib.request.urlopen(req)
+        rescode = response.getcode()
+        
+        if(rescode==200):
+            response_body = response.read()
+            search_result = response_body.decode('utf-8')
+            stores_list = parse_store_xml(search_result)
+
+            # Print the results in a more readable format
+            # for store in stores_list:
+            #     print("\nStore Information:")
+            #     for key, value in store.items():
+            #         print(f"{key}: {value}")
+
+            return jsonify({
+                'stores' : stores_list,
+                'flag' : True
+            })
+        else:
+            return jsonify({
+                'message' : f'Error Code : {rescode}',
+                'flag' : False
+            })
+    except Exception as e:
+        return jsonify({
+            'message' : str(e),
+            'flag' : False
+        })
+
+def parse_store_xml(xml_string):
+    stores = []
+    # Parse XML string
+    root = ET.fromstring(xml_string)
+    # Find all item elements
+    for item in root.findall('.//item'):
+        store = {
+            'title': item.find('title').text.replace('<b>', '').replace('</b>', ''),
+            'category': item.find('category').text if item.find('category') is not None else '',
+            'address': item.find('address').text if item.find('address') is not None else '',
+            'roadAddress': item.find('roadAddress').text if item.find('roadAddress') is not None else '',
+            'telephone': item.find('telephone').text if item.find('telephone') is not None else '',
+            'mapx': item.find('mapx').text if item.find('mapx') is not None else '',
+            'mapy': item.find('mapy').text if item.find('mapy') is not None else ''
+        }
+        stores.append(store)
+    return stores

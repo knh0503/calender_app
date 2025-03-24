@@ -7,6 +7,9 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qt13xtw5m5"></script>
+    <script src="https://oapi.map.naver.com/openapi/v3/maps-geocoder.js"></script>
+
 </head>
 <body>
     <nav class="nav-top">
@@ -26,16 +29,17 @@
         </div>
     </nav>
 
-    <div class="user-info">
-        <img src="{{ url_for('static', filename='images/profile/woman.png' if user.image_path == ''
-            else user.image_path) }}" class="profile-picture">
-        <div>
-            <p class="user-name">{{ user.username }}</p>
-            <p class="description">{{ user.description }}</p>
-        </div>
-    </div>
+
 
     <div class="calendar-container">
+        <div class="user-info">
+            <img src="{{ url_for('static', filename='images/profile/woman.png' if user.image_path == ''
+                else user.image_path) }}" class="profile-picture">
+            <div>
+                <p class="user-name">{{ user.username }}</p>
+                <p class="description">{{ user.description }}</p>
+            </div>
+        </div>
         <div class="calendar-header">
             <button id="currentMonth"></button>
             <div class="calendar-buttons">
@@ -75,7 +79,17 @@
 
                 <input type="text" id="description" name="description" placeholder="설명">
                 <input type="text" id="category" name="category" placeholder="분류">
-                <input type="text" id="location" name="location" placeholder="장소">
+                <div id="locationDiv" class="relative">
+                    <div id="locationInput">
+                        <input type="text" id="location" name="location" placeholder="위치">
+                        <input type="hidden" id="locationData" name="locationData">
+                        <button type="button" id="locationButton">검색</button>
+                    </div>
+                    <select id="locationDropdown" class="form-select mt-2 w-full hidden">
+                        <option value="">검색 결과를 선택하세요</option>
+                    </select>
+                </div>
+                <div id="map" style="width:100%;height:200px;"></div>
                 <input type="text" id="alarm" name="alarm" placeholder="알람">
                 <div class="color-picker-container">
                     <input type="color" id="color" name="color">
@@ -130,6 +144,19 @@
 
             <input type="text" id="newDescription" name="description" placeholder="설명">
             <input type="text" id="newCategory" name="category" placeholder="분류">
+
+            <div id="newLocationDiv" class="relative">
+                <div id="newLocationInput">
+                    <input type="text" id="newLocation" name="location" placeholder="위치">
+                    <input type="hidden" id="newLocationData" name="locationData">
+                    <button type="button" id="newLocationButton">검색</button>
+                </div>
+                <select id="newLocationDropdown" class="form-select mt-2 w-full hidden">
+                    <option value="">검색 결과를 선택하세요</option>
+                </select>
+            </div>
+            <div id="newMap" style="width:100%;height:200px;"></div>
+
             <input type="text" id="newLocation" name="location" placeholder="장소">
             <input type="text" id="newAlarm" name="alarm" placeholder="알람">
             <div class="color-picker-container">

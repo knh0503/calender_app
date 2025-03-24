@@ -1,3 +1,160 @@
+class mapSearchAPI {
+    constructor(options) { 
+        this.mapID = options.mapID;
+        this.inputID = options.inputID;
+        this.inputDataID = options.inputDataID;
+        this.buttonID = options.buttonID;
+        this.dropdownID = options.dropdownID;
+
+        this.map = null;
+        this.markers = [];
+        this.infoWindows = [];
+        this.center = [];
+
+        this.init();
+    }
+
+    init() {
+        this.getMap();
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        document.getElementById(this.dropdownID).addEventListener('change', (e) => {
+            if (e.target.value) {
+                const selectedLocation = JSON.parse(e.target.value);
+                document.getElementById(this.inputID).value = selectedLocation.title;
+                document.getElementById(this.inputDataID).value = e.target.value;
+
+                selectedLocation = this.searchPlace(selectedLocation);
+            }
+        });
+        document.getElementById(this.buttonID).addEventListener('click', ()=> this.mapSearch());
+    }  
+
+    getMap() {
+        this.map = new naver.maps.Map(this.mapID, {
+            center: new naver.maps.LatLng(37.5665, 126.9780), // 초기 위치 (서울)
+            zoom: 13
+        });
+    }
+
+    setLocation(lat,lng) {
+        this.map.setCenter(lat, lng);
+    }
+
+    searchPlace(place) {    
+        naver.maps.Service.geocode({ query: place.address }, (status, response) => {
+            if (status !== naver.maps.Service.Status.OK) {
+                return showToastify("주소를 불러올 수 없습니다");
+            }
+    
+            if (!response.v2.addresses || response.v2.addresses.length === 0) {
+                return showToastify("검색 결과가 없습니다.")
+            }
+    
+            var result = response.v2.addresses[0];
+            var latlng = new naver.maps.LatLng(result.y, result.x);
+
+            this.createMarkerAndInfo(latlng, place);
+
+            place.mapx = result.x;
+            place.mapy = result.y;
+            return place;
+        });
+    }
+
+    mapSearch() {
+        var place = document.getElementById(this.inputID).value;
+        const dropdown = document.getElementById(this.dropdownID);
+    
+        dropdown.innerHTML = '<option value="">검색 결과를 선택하세요</option>';
+    
+        if (!place) {
+            showToastify("장소를 입력해주세요");
+            return;
+        }
+
+        const data = {place : place};
+
+        axios.post('/mapSearch', data)
+        .then((response) => {
+            if (!response.data.flag) {
+                return showToastify(response.data.message);
+            }
+            if (response.data.stores.length > 0) {
+                dropdown.classList.remove('hidden');
+    
+                response.data.stores.forEach(store => {
+                    const option = document.createElement('option');
+                    option.value = JSON.stringify({
+                        title : store.title,
+                        address : store.roadAddress || store.address,
+                        mapx : store.mapx,
+                        mapy : store.mapy
+                    });
+                    option.textContent = `${store.title}`;
+                    dropdown.appendChild(option);
+                });
+            }
+            else {
+                showToastify('검색 결과가 없습니다.');
+            }
+        })
+        .catch((error) => {
+            console.error('Error: ', error);
+            showToastify('검색 중 오류가 발생했습니다.');
+        });
+    }
+
+    createMarkerAndInfo(latlng, place) {
+        // this.clearMarkers();
+
+        const marker = new naver.maps.Marker({
+            position: latlng,
+            map: this.map
+        });
+
+        this.map.setCenter(latlng);
+        this.map.setZoom(12);
+
+        const infoWindow = new naver.maps.InfoWindow({
+            content: this.createInfoWindowContent(place)
+        });
+
+        infoWindow.open(this.map, latlng)
+
+
+
+        this.markers.push(marker);
+        this.infoWindows.push(infoWindow);
+
+        
+
+        infoWindow.open(this.map, marker);
+    }
+
+    createInfoWindowContent(location) {
+        return `
+            <div style="padding: 5px; width: 150px;">
+                <p style="font-weight : bold; font-size:0.7em">${location.title}</p>
+                <p style="font-size: 0.5em;">주소: ${location.roadAddress || location.address}</p>
+            </div>
+        `;
+    }
+
+    clearMarkers() {
+        this.markers.forEach(marker => {
+            marker.setMap(null);
+        });
+        this.infoWindows.forEach(infoWindow => {
+            infoWindow.close();
+        });
+        this.markers = [];
+        this.infoWindows = [];
+    }
+}
+
 // 현재 캘린더, 날짜 따로 표기
 class Calendar_v3 {
     constructor() { 
@@ -6,6 +163,21 @@ class Calendar_v3 {
         this.currentYear = this.date.getFullYear();
         this.days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         this.events = {};
+        this.newMap = new mapSearchAPI({
+            mapID: 'newMap',
+            inputID: 'newLocation',
+            inputDataID: 'newLocationData',
+            buttonID: 'newLocationButton',
+            dropdownID: 'newLocationDropdown'
+        });
+        this.map = new mapSearchAPI({
+            mapID: 'map',
+            inputID: 'location',
+            inputDataID: 'locationData',
+            buttonID: 'locationButton',
+            dropdownID: 'locationDropdown'
+        });
+
         this.init();
     }
 
@@ -56,7 +228,7 @@ class Calendar_v3 {
             document.getElementById('eventUpdateModal').style.display = "none";
         });
         document.getElementById('eventUpdateForm').addEventListener('submit', (e) => this.updateEvent(e));
-    }   
+    }
 
     render() {
         const grid = document.getElementById('calendarGrid');
@@ -172,6 +344,7 @@ class Calendar_v3 {
             showToastify(response.data.message);
             if (response.data.flag == true) {
                 this.closeModal();
+                this.loadEvents();
                 this.render();
                 document.getElementById('eventForm').reset();
             }
@@ -258,17 +431,38 @@ class Calendar_v3 {
 
         document.getElementById('newEventID').value = event.id;
         document.getElementById('newEventTitle').value = event.title;
-        document.getElementById('newAllDay').value = event.allDay;
+
+        if (event.allDay == true) {
+            document.getElementById('newAllDay').checked = true;
+            document.getElementById('newStartTime').disabled = true;
+            document.getElementById('newEndTime').disabled = true;
+            document.getElementById('newEndDate').disabled = false;
+        } else {
+            document.getElementById('newAllDay').checked = false;
+            document.getElementById('newStartTime').disabled = false;
+            document.getElementById('newEndTime').disabled = false;
+            document.getElementById('newEndDate').disabled = true;
+        }
+
         document.getElementById('newStartTime').value = event.start.split('T')[1].substring(0,5);
         document.getElementById('newEndTime').value = event.end.split('T')[1].substring(0,5);
         document.getElementById('newStartDate').value = event.start.split('T')[0];
         document.getElementById('newEndDate').value = event.end.split('T')[0];
         document.getElementById('newDescription').value = event.description;
         document.getElementById('newCategory').value = event.category;
-        document.getElementById('newLocation').value = event.location;
+
+        const selectedLocation = JSON.parse(event.location);
+        document.getElementById('newLocation').value = selectedLocation.title;
+
+        var latlng = new naver.maps.LatLng(37.5665, 126.9780);
+        var latlng = new naver.maps.LatLng(selectedLocation.mapy, selectedLocation.mapx);
+
+        console.log(latlng, selectedLocation);
+        this.newMap.createMarkerAndInfo(latlng, selectedLocation);
+
         document.getElementById('newAlarm').value = event.alarm;
         document.getElementById('newColor').value = event.color;
-    }
+        }
 
     deleteEvent(date, index) {
         this.events[date].splice(index, 1);
@@ -292,7 +486,10 @@ class Calendar_v3 {
                 this.events = {};
                 response.data.forEach(event => {
                     let startDate = new Date(event.start);
-                    const endDate = new Date(event.end);
+                    let endDate = new Date(event.end);
+
+                    startDate = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
+                    endDate = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()));
 
                     for (let date = new Date(startDate); date<=endDate; date.setDate(date.getDate()+1)) {
                         const dateKey = date.toISOString().split('T')[0];
@@ -342,3 +539,5 @@ function showToastify(message) {
         }
     }).showToast();
 }
+
+
